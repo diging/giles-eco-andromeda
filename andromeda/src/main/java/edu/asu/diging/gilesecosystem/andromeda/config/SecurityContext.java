@@ -18,7 +18,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
         web
         // Spring Security ignores request to static resources such as CSS or JS
         // files.
-        .ignoring().antMatchers("/static/**");
+        .ignoring().antMatchers("/static/**").antMatchers("/rest/**/");
     }
 
     @Override
