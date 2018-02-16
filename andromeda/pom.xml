@@ -9,7 +9,7 @@
 
     <properties>
         <geco.andromeda.version>0.1-SNAPSHOT</geco.andromeda.version>
-        <geco.requests.version>0.5</geco.requests.version>
+        <geco.requests.version>0.6</geco.requests.version>
         <geco.util.version>0.4.2</geco.util.version>
         <geco.september.util.version>0.2</geco.september.util.version>
 
