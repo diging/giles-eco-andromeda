@@ -9,12 +9,13 @@
 
     <properties>
         <geco.andromeda.version>0.1-SNAPSHOT</geco.andromeda.version>
-        <geco.requests.version>0.6</geco.requests.version>
-        <geco.util.version>0.4.2</geco.util.version>
+        <geco.requests.version>0.7</geco.requests.version>
+        <geco.util.version>0.4.3-SNAPSHOT</geco.util.version>
+        <geco.kafka-util.version>0.1</geco.kafka-util.version>
         <geco.september.util.version>0.2</geco.september.util.version>
 
         <org.slf4j-version>1.7.5</org.slf4j-version>
-        <org.springframework-version>4.3.1.RELEASE</org.springframework-version>
+        <org.springframework-version>4.3.2.RELEASE</org.springframework-version>
         <spring-security-version>4.1.3.RELEASE</spring-security-version>
         <admin.password>admin</admin.password>
         
@@ -56,6 +57,12 @@
             <groupId>edu.asu.diging.giles-eco</groupId>
             <artifactId>september-util</artifactId>
             <version>${geco.september.util.version}</version>
+        </dependency>
+        
+        <dependency>
+        	<groupId>edu.asu.diging.giles-eco</groupId>
+        	<artifactId>kafka-util</artifactId>
+        	<version>${geco.kafka-util.version}</version>
         </dependency>
         
 
