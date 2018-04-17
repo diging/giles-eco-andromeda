@@ -14,7 +14,7 @@
 	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
 	<mvc:annotation-driven />
-	<context:component-scan base-package="edu.asu.diging.gilesecosystem.andromeda,edu.asu.diging.gilesecosystem.requests,edu.asu.diging.gilesecosystem.util,edu.asu.diging.gilesecosystem.kafka.util" />
+	<context:component-scan base-package="edu.asu.diging.gilesecosystem.andromeda,edu.asu.diging.gilesecosystem.requests,edu.asu.diging.gilesecosystem.util,edu.asu.diging.gilesecosystem.kafka.util.service" />
 	
 	<import resource="spring-security.xml" />
 	
