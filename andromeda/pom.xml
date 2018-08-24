@@ -9,9 +9,9 @@
 
     <properties>
         <geco.andromeda.version>0.1-SNAPSHOT</geco.andromeda.version>
-        <geco.requests.version>0.7</geco.requests.version>
-        <geco.util.version>0.4.3-SNAPSHOT</geco.util.version>
-        <geco.kafka-util.version>0.1</geco.kafka-util.version>
+        <geco.requests.version>0.8</geco.requests.version>
+        <geco.util.version>0.5</geco.util.version>
+        <geco.kafka-util.version>0.2</geco.kafka-util.version>
         <geco.september.util.version>0.2</geco.september.util.version>
 
         <org.slf4j-version>1.7.5</org.slf4j-version>
@@ -31,27 +31,30 @@
         <andromeda.baseDir></andromeda.baseDir>
         <andromeda.tmp.folder></andromeda.tmp.folder>
 
-        <andromeda.base.url>http://localhost:8082/andromeda</andromeda.base.url>
+        <andromeda.base.url>http://localhost:8080/andromeda</andromeda.base.url>
         
         <!-- Kafka -->
         <andromeda.kafka.hosts>localhost:9092</andromeda.kafka.hosts>
 
         <log.level>debug</log.level>
+        <!-- Zookeeper -->
+        <zookeeper.host>localhost</zookeeper.host>
+        <zookeeper.port>2181</zookeeper.port>
     </properties>
 
     <dependencies>
         <!-- Giles Ecosystem -->
-        <dependency>
-            <groupId>edu.asu.diging.giles-eco</groupId>
-            <artifactId>requests</artifactId>
-            <version>${geco.requests.version}</version>
-        </dependency>
+    <dependency>
+    	<groupId>edu.asu.diging</groupId>
+    	<artifactId>giles-eco-util</artifactId>
+    	<version>${geco.util.version}</version>
+	</dependency>
 
-        <dependency>
-            <groupId>edu.asu.diging.giles-eco</groupId>
-            <artifactId>util</artifactId>
-            <version>${geco.util.version}</version>
-        </dependency>
+     <dependency>
+    	<groupId>edu.asu.diging</groupId>
+    	<artifactId>giles-eco-requests</artifactId>
+    	<version>${geco.requests.version}</version>
+</dependency>
         
         <dependency>
             <groupId>edu.asu.diging.giles-eco</groupId>
@@ -60,11 +63,11 @@
         </dependency>
         
         <dependency>
-        	<groupId>edu.asu.diging.giles-eco</groupId>
-        	<artifactId>kafka-util</artifactId>
-        	<version>${geco.kafka-util.version}</version>
-        </dependency>
-        
+    <groupId>edu.asu.diging</groupId>
+    <artifactId>giles-eco-kafka-util</artifactId>
+    <version>${geco.kafka-util.version}</version>
+</dependency>
+
 
         <!-- Spring -->
         <dependency>
