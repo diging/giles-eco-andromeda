@@ -158,6 +158,13 @@ public class TextExtractionManager extends AExtractionManager
             completedRequest.setDownloadUrl(fileEndpoint);
             completedRequest.setTextFilename(fileName);
         }
+        
+		// check for null value in url
+		if (fileEndpoint == null || fileEndpoint.contains("null")) {
+			logger.info("File End Point is null or either contains null value component");
+			completedRequest.setStatus(RequestStatus.FAILED);
+			completedRequest.setErrorMsg("File End Point is null or either contains null value component");
+		}
 
         try {
             requestProducer.sendRequest(completedRequest, propertiesManager
@@ -181,6 +188,13 @@ public class TextExtractionManager extends AExtractionManager
             requestPage.setPathToFile(page.path);
             requestPage.setFilename(page.filename);
         }
+		
+		// check for null value in url
+		if (requestPage != null
+				&& (requestPage.getDownloadUrl() == null || requestPage.getDownloadUrl().contains("null"))) {
+			status = PageStatus.FAILED;
+			errorMsg = "File Download URL is null or contains null value components in URL";
+		}
         requestPage.setPageNr(i);
         requestPage.setStatus(status);
         requestPage.setErrorMsg(errorMsg);
