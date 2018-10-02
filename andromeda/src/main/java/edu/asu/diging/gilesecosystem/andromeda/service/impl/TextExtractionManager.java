@@ -135,7 +135,6 @@ public class TextExtractionManager extends AExtractionManager
             logger.error("Could not create request.", e);
             // this should never happen if used correctly
         }
-
         // generate download url
         String fileEndpoint = restEndpoint + DownloadFileController.GET_FILE_URL
                 .replace(DownloadFileController.REQUEST_ID_PLACEHOLDER,
@@ -158,14 +157,11 @@ public class TextExtractionManager extends AExtractionManager
             completedRequest.setDownloadUrl(fileEndpoint);
             completedRequest.setTextFilename(fileName);
         }
-        
-		// check for null value in url
-		if (fileEndpoint == null || fileEndpoint.contains("null")) {
+		if (fileEndpoint == null || fileEndpoint.contains("null")) { // check for null value in url
 			logger.info("File End Point is null or either contains null value component");
 			completedRequest.setStatus(RequestStatus.FAILED);
 			completedRequest.setErrorMsg("File End Point is null or either contains null value component");
 		}
-
         try {
             requestProducer.sendRequest(completedRequest, propertiesManager
                     .getProperty(Properties.KAFKA_EXTRACTION_COMPLETE_TOPIC));
