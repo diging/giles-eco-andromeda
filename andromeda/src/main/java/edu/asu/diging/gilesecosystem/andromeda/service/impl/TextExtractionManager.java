@@ -36,8 +36,7 @@ import edu.asu.diging.gilesecosystem.septemberutil.properties.MessageType;
 import edu.asu.diging.gilesecosystem.septemberutil.service.ISystemMessageHandler;
 
 @Service
-public class TextExtractionManager extends AExtractionManager
-        implements ITextExtractionManager {
+public class TextExtractionManager extends AExtractionManager implements ITextExtractionManager {
 
     @Autowired
     private IRequestFactory<ICompletedTextExtractionRequest, CompletedTextExtractionRequest> requestFactory;
@@ -57,8 +56,7 @@ public class TextExtractionManager extends AExtractionManager
      * (non-Javadoc)
      * 
      * @see edu.asu.diging.cepheus.service.pdf.impl.ITextExtractionManager#
-     * extractText
-     * (edu.asu.diging.gilesecosystem.requests.ITextExtractionRequest)
+     * extractText (edu.asu.diging.gilesecosystem.requests.ITextExtractionRequest)
      */
     @Override
     public void extractText(ITextExtractionRequest request) throws ExtractionException {
@@ -67,8 +65,7 @@ public class TextExtractionManager extends AExtractionManager
         RequestStatus status = RequestStatus.COMPLETE;
         String errorMsg = "";
         try {
-            pdfDocument = PDDocument.load(
-                    new ByteArrayInputStream(downloadFile(request.getDownloadUrl())),
+            pdfDocument = PDDocument.load(new ByteArrayInputStream(downloadFile(request.getDownloadUrl())),
                     MemoryUsageSetting.setupTempFileOnly());
         } catch (IOException e) {
             messageHandler.handleMessage("Could not load PDF.", e, MessageType.ERROR);
@@ -84,11 +81,9 @@ public class TextExtractionManager extends AExtractionManager
 
         if (pdfDocument != null) {
             try {
-                extractedText = extractText(pdfDocument, request.getRequestId(),
-                        request.getDocumentId(), fileName);
+                extractedText = extractText(pdfDocument, request.getRequestId(), request.getDocumentId(), fileName);
             } catch (IOException e1) {
-                messageHandler.handleMessage("Could not extract text.", e1,
-                        MessageType.ERROR);
+                messageHandler.handleMessage("Could not extract text.", e1, MessageType.ERROR);
                 status = RequestStatus.FAILED;
                 errorMsg = e1.getMessage();
             }
@@ -102,18 +97,17 @@ public class TextExtractionManager extends AExtractionManager
                     PageStatus pageStatus = PageStatus.COMPLETE;
                     String pageErrorMsg = "";
                     try {
-                        page = extractPageText(pdfDocument, i, request.getRequestId(),
-                                request.getDocumentId(), request.getFilename());
+                        page = extractPageText(pdfDocument, i, request.getRequestId(), request.getDocumentId(),
+                                request.getFilename());
                     } catch (IOException e) {
-                        messageHandler.handleMessage(
-                                "Could not extract text from page " + i + ".", e,
+                        messageHandler.handleMessage("Could not extract text from page " + i + ".", e,
                                 MessageType.ERROR);
                         pageStatus = PageStatus.FAILED;
                         pageErrorMsg = e.getMessage();
                     }
 
-                    edu.asu.diging.gilesecosystem.requests.impl.Page requestPage = buildRequestPage(
-                            request, restEndpoint, i, page, pageStatus, pageErrorMsg);
+                    edu.asu.diging.gilesecosystem.requests.impl.Page requestPage = buildRequestPage(request,
+                            restEndpoint, i, page, pageStatus, pageErrorMsg);
                     pages.add(requestPage);
 
                 }
@@ -122,33 +116,29 @@ public class TextExtractionManager extends AExtractionManager
             try {
                 pdfDocument.close();
             } catch (IOException e) {
-                messageHandler.handleMessage("Error closing document " + fileName + ".",
-                        e, MessageType.ERROR);
+                messageHandler.handleMessage("Error closing document " + fileName + ".", e, MessageType.ERROR);
             }
         }
 
         ICompletedTextExtractionRequest completedRequest = null;
         try {
-            completedRequest = requestFactory.createRequest(request.getRequestId(),
-                    request.getUploadId());
+            completedRequest = requestFactory.createRequest(request.getRequestId(), request.getUploadId());
         } catch (InstantiationException | IllegalAccessException e) {
             logger.error("Could not create request.", e);
             // this should never happen if used correctly
         }
+
         // generate download url
         String fileEndpoint = restEndpoint + DownloadFileController.GET_FILE_URL
-                .replace(DownloadFileController.REQUEST_ID_PLACEHOLDER,
-                        request.getRequestId())
-                .replace(DownloadFileController.DOCUMENT_ID_PLACEHOLDER,
-                        request.getDocumentId())
+                .replace(DownloadFileController.REQUEST_ID_PLACEHOLDER, request.getRequestId())
+                .replace(DownloadFileController.DOCUMENT_ID_PLACEHOLDER, request.getDocumentId())
                 .replace(DownloadFileController.FILENAME_PLACEHOLDER, fileName);
 
         completedRequest.setDocumentId(request.getDocumentId());
         completedRequest.setFilename(request.getFilename());
         completedRequest.setStatus(status);
         completedRequest.setErrorMsg(errorMsg);
-        completedRequest
-                .setExtractionDate(OffsetDateTime.now(ZoneId.of("UTC")).toString());
+        completedRequest.setExtractionDate(OffsetDateTime.now(ZoneId.of("UTC")).toString());
         completedRequest.setPages(pages);
 
         if (extractedText != null) {
@@ -157,50 +147,35 @@ public class TextExtractionManager extends AExtractionManager
             completedRequest.setDownloadUrl(fileEndpoint);
             completedRequest.setTextFilename(fileName);
         }
-		if (fileEndpoint == null || fileEndpoint.contains("null")) { // check for null value in url
-			logger.info("File End Point is null or either contains null value component");
-			completedRequest.setStatus(RequestStatus.FAILED);
-			completedRequest.setErrorMsg("File End Point is null or either contains null value component");
-		}
+
         try {
-            requestProducer.sendRequest(completedRequest, propertiesManager
-                    .getProperty(Properties.KAFKA_EXTRACTION_COMPLETE_TOPIC));
+            requestProducer.sendRequest(completedRequest,
+                    propertiesManager.getProperty(Properties.KAFKA_EXTRACTION_COMPLETE_TOPIC));
         } catch (MessageCreationException e) {
             logger.error("Could not send message.", e);
         }
     }
 
-    public edu.asu.diging.gilesecosystem.requests.impl.Page buildRequestPage(
-            ITextExtractionRequest request, String restEndpoint, int i, Page page,
-            PageStatus status, String errorMsg) {
+    public edu.asu.diging.gilesecosystem.requests.impl.Page buildRequestPage(ITextExtractionRequest request,
+            String restEndpoint, int i, Page page, PageStatus status, String errorMsg) {
         edu.asu.diging.gilesecosystem.requests.impl.Page requestPage = new edu.asu.diging.gilesecosystem.requests.impl.Page();
         if (page != null) {
             requestPage.setDownloadUrl(restEndpoint + DownloadFileController.GET_FILE_URL
-                    .replace(DownloadFileController.REQUEST_ID_PLACEHOLDER,
-                            request.getRequestId())
-                    .replace(DownloadFileController.DOCUMENT_ID_PLACEHOLDER,
-                            request.getDocumentId())
+                    .replace(DownloadFileController.REQUEST_ID_PLACEHOLDER, request.getRequestId())
+                    .replace(DownloadFileController.DOCUMENT_ID_PLACEHOLDER, request.getDocumentId())
                     .replace(DownloadFileController.FILENAME_PLACEHOLDER, page.filename));
             requestPage.setPathToFile(page.path);
             requestPage.setFilename(page.filename);
         }
-		
-		// check for null value in url
-		if (requestPage != null
-				&& (requestPage.getDownloadUrl() == null || requestPage.getDownloadUrl().contains("null"))) {
-			status = PageStatus.FAILED;
-			errorMsg = "File Download URL is null or contains null value components in URL";
-		}
         requestPage.setPageNr(i);
         requestPage.setStatus(status);
         requestPage.setErrorMsg(errorMsg);
         return requestPage;
     }
 
-    private Text extractText(PDDocument pdfDocument, String requestId, String documentId,
-            String filename) throws IOException {
-        String docFolder = fileStorageManager.getAndCreateStoragePath(requestId,
-                documentId, null);
+    private Text extractText(PDDocument pdfDocument, String requestId, String documentId, String filename)
+            throws IOException {
+        String docFolder = fileStorageManager.getAndCreateStoragePath(requestId, documentId, null);
         String filePath = docFolder + File.separator + filename;
         File fileObject = new File(filePath);
         fileObject.createNewFile();
@@ -223,31 +198,29 @@ public class TextExtractionManager extends AExtractionManager
         Text text = new Text();
         text.size = fileObject.length();
 
-        String relativePath = fileStorageManager.getFileFolderPathInBaseFolder(requestId,
-                documentId, null);
+        String relativePath = fileStorageManager.getFileFolderPathInBaseFolder(requestId, documentId, null);
         text.path = relativePath + File.separator + filename;
 
         return text;
     }
 
-    private Page extractPageText(PDDocument pdfDocument, int pageNr, String requestId,
-            String documentId, String filename) throws IOException {
-         String pageText = null;
-        
-         PDFTextStripper stripper;
-         stripper = new PDFTextStripper();
-         // pdfbox starts counting at 1 for the text extraction
-         stripper.setStartPage(pageNr + 1);
-         stripper.setEndPage(pageNr + 1);
-        
-         pageText = stripper.getText(pdfDocument);
-        
-         if (pageText == null) {
-         return null;
-         }
-        
-         return saveTextToFile(pageNr, requestId, documentId, pageText,
-         filename, ".txt");
+    private Page extractPageText(PDDocument pdfDocument, int pageNr, String requestId, String documentId,
+            String filename) throws IOException {
+        String pageText = null;
+
+        PDFTextStripper stripper;
+        stripper = new PDFTextStripper();
+        // pdfbox starts counting at 1 for the text extraction
+        stripper.setStartPage(pageNr + 1);
+        stripper.setEndPage(pageNr + 1);
+
+        pageText = stripper.getText(pdfDocument);
+
+        if (pageText == null) {
+            return null;
+        }
+
+        return saveTextToFile(pageNr, requestId, documentId, pageText, filename, ".txt");
     }
 
     class Text {
