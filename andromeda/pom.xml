@@ -9,8 +9,8 @@
 
     <properties>
         <geco.andromeda.version>0.1-SNAPSHOT</geco.andromeda.version>
-        <geco.requests.version>0.8</geco.requests.version>
-        <geco.util.version>0.5</geco.util.version>
+        <geco.requests.version>0.13</geco.requests.version>
+        <geco.util.version>0.6</geco.util.version>
         <geco.kafka-util.version>0.2</geco.kafka-util.version>
         <geco.september.util.version>0.3</geco.september.util.version>
 
