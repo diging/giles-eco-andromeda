@@ -140,6 +140,7 @@ public class TextExtractionManager extends AExtractionManager implements ITextEx
         completedRequest.setErrorMsg(errorMsg);
         completedRequest.setExtractionDate(OffsetDateTime.now(ZoneId.of("UTC")).toString());
         completedRequest.setPages(pages);
+        completedRequest.setGeneratedByService(propertiesManager.getProperty(Properties.APPLICATION_ID));
 
         if (extractedText != null) {
             completedRequest.setDownloadPath(extractedText.path);
